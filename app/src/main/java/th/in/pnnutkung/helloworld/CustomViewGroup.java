@@ -1,7 +1,7 @@
 package th.in.pnnutkung.helloworld;
 
 import android.content.Context;
-import android.os.Bundle;
+import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
@@ -9,49 +9,38 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.annotation.StyleRes;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.util.SparseArray;
 import android.widget.Button;
-import android.widget.FrameLayout;
 
 /**
  * Created by PNNutkung on 2017-10-18.
  */
 
-public class CustomViewGroup extends FrameLayout {
+public class CustomViewGroup extends BaseViewGroup {
     private Button btnHello;
 
     public CustomViewGroup(@NonNull Context context) {
         super(context);
-        initInflate();
         initInstances();
     }
 
     public CustomViewGroup(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        initInflate();
         initInstances();
     }
 
     public CustomViewGroup(@NonNull Context context, @Nullable AttributeSet attrs, @AttrRes int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        initInflate();
         initInstances();
     }
 
     @RequiresApi(21)
     public CustomViewGroup(@NonNull Context context, @Nullable AttributeSet attrs, @AttrRes int defStyleAttr, @StyleRes int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        initInflate();
         initInstances();
     }
 
-    private void initInflate() {
-        inflate(getContext(), R.layout.sample_layout, this);
-    }
-
     private void initInstances() {
-        btnHello = findViewById(R.id.btnCustomViewGroupHello);
+        btnHello = findViewById(R.id.btnCustomViewGroup);
     }
 
     public void setButtonText(String text) {
@@ -59,51 +48,66 @@ public class CustomViewGroup extends FrameLayout {
     }
 
     @Override
-    protected void dispatchSaveInstanceState(SparseArray<Parcelable> container) {
-        dispatchFreezeSelfOnly(container);
+    protected int getLayoutRes() {
+        return R.layout.sample_layout;
     }
 
     @Override
-    protected void dispatchRestoreInstanceState(SparseArray<Parcelable> container) {
-        dispatchThawSelfOnly(container);
-    }
+    protected void setupView() {
 
-    @Override
-    protected Parcelable onSaveInstanceState() {
-        Parcelable superState = super.onSaveInstanceState();
-
-        Bundle childrenStates = new Bundle();
-        for (int i = 0; i < getChildCount(); i++) {
-            int id = getChildAt(i).getId();
-            if (id != 0) {
-                SparseArray childrenState = new SparseArray();
-                getChildAt(i).saveHierarchyState(childrenState);
-                childrenStates.putSparseParcelableArray(String.valueOf(id), childrenState);
-            }
-        }
-        Bundle bundle = new Bundle();
-        bundle.putBundle("childrenStates", childrenStates);
-
-        BundleSavedState bundleSavedState = new BundleSavedState(superState);
-        bundleSavedState.setBundle(bundle);
-        return bundleSavedState;
     }
 
     @Override
     protected void onRestoreInstanceState(Parcelable state) {
-        BundleSavedState bundleSavedState = (BundleSavedState) state;
-        super.onRestoreInstanceState(bundleSavedState.getSuperState());
-
-        Bundle childrenStates = bundleSavedState.getBundle().getBundle("childrenStates");
-        Log.wtf("child_count", String.format("%d", getChildCount()));
-        for(int i = 0; i < getChildCount(); i++) {
-            int id = getChildAt(i).getId();
-            if(id != 0) {
-                if (childrenStates != null && childrenStates.containsKey(String.valueOf(id))) {
-                    SparseArray childrenState = childrenStates.getSparseParcelableArray(String.valueOf(id));
-                    getChildAt(id).restoreHierarchyState(childrenState);
-                }
-            }
+        if( !( state instanceof SavedState ) ){
+            super.onRestoreInstanceState( state );
+            return;
         }
+        SavedState ss = (SavedState) state;
+        super.onRestoreInstanceState( ss );
+    }
+
+    @Nullable
+    @Override
+    protected Parcelable onSaveInstanceState() {
+        Parcelable superState = super.onSaveInstanceState();
+        // Must call
+        SavedState ss = (SavedState) onSaveChildInstanceState( new SavedState( superState ) );
+        // save data here
+        return ss;
+    }
+
+    private static class SavedState extends ChildSavedState{
+
+        SavedState( Parcelable superState ){
+            super( superState );
+        }
+
+        private SavedState( Parcel in, ClassLoader classLoader ){
+            super( in, classLoader );
+            // save data here
+        }
+
+        @Override
+        public void writeToParcel( Parcel out, int flags ){
+            super.writeToParcel( out, flags );
+            // restore data here
+        }
+
+        public static final ClassLoaderCreator<SavedState> CREATOR = new ClassLoaderCreator<CustomViewGroup.SavedState>(){
+            @Override
+            public CustomViewGroup.SavedState createFromParcel( Parcel source, ClassLoader loader ){
+                return new CustomViewGroup.SavedState( source, loader );
+            }
+
+            public CustomViewGroup.SavedState createFromParcel( Parcel in ){
+                return null;
+            }
+
+
+            public CustomViewGroup.SavedState[] newArray( int size ){
+                return new CustomViewGroup.SavedState[size];
+            }
+        };
     }
 }

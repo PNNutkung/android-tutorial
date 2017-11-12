@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">HelloWorld</string>
+    <string name="settings">Settings</string>
+    <string name="radio_btn_plus">+</string>
+    <string name="radio_btn_minus">-</string>
+    <string name="radio_btn_multiply">*</string>
+    <string name="radio_btn_divide">/</string>
+    <string name="btn_calculate">Calculate</string>
+    <string name="tv_result">=0</string>
+    <string name="checkbox_agree">I agree</string>
+    <string name="iv_describtion">An ic launcher</string>
+    <string name="welcome_to_clipzy">Welcome to Clipzy</string>
+    <string name="clip_anything_from_over_100_000_hot_topics">Clip anything from over\n 100,000 hot topics</string>
+    <string name="by_continuing_you_accept_the_term_of_use_and_privacy_policy">By continuing, you accept the Term of Use and Privacy Policy.</string>
+    <string name="button">button</string>
+</resources>

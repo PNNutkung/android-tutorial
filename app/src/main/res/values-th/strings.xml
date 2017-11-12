@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">สวัสดีชาวโลก</string>
+    <string name="settings">ตั้งค่า</string>
+    <string name="btn_calculate">คำนวน</string>
+    <string name="checkbox_agree">ฉันยอมรับ</string>
+    <string name="iv_describtion">An ic launcher</string>
+</resources>

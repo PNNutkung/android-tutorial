@@ -3,6 +3,7 @@ package th.in.pnnutkung.helloworld;
 import android.content.Intent;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Display;
@@ -112,10 +113,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 c3.z = 20;
                 intent.putExtra("cParcelable", c3);
 
-                //startActivity(intent);
+                startActivityForResult(intent, 12345);
             } catch (ArithmeticException ae) {
                 Toast.makeText(MainActivity.this, "You should not divide by zero", Toast.LENGTH_SHORT).show();
             }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case 12345:
+                if (resultCode == RESULT_OK) {
+                    Toast.makeText(MainActivity.this, data.getStringExtra("result"), Toast.LENGTH_SHORT).show();
+                }
+                break;
         }
     }
 
@@ -163,6 +176,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+    }
+
+
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        super.onSaveInstanceState(outState, outPersistentState);
     }
 
     @Override
